@@ -17,6 +17,7 @@ const Login = () => {
 
     const [errors, setErrors] = useState({})
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
 
     const validateForm = (data) => {
         const errors = {};
@@ -44,6 +45,7 @@ const Login = () => {
             return; // Stop execution if there are errors
         }
         try {
+            setIsLoading(true)
             const data = await loginUser(formData);
             const { user, accessToken, refreshToken } = data.data;
             dispatch(setUser({ user, accessToken, refreshToken }));
@@ -51,6 +53,9 @@ const Login = () => {
             navigate("/");
         } catch (error) {
             console.error("Login failed:", error.response?.data?.message || error.message);
+        }
+        finally {
+            setIsLoading(false)
         }
     };
 
@@ -98,7 +103,7 @@ const Login = () => {
                     onClick={handleLogin}
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
                 >
-                    Login
+                    {isLoading ? "Wait . . ." : "Login"}
                 </button>
 
                 <p className="text-center text-gray-500 text-sm mt-4">
